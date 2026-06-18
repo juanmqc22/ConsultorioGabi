@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #1e1e2e;
+  --bg-surface: #181825;
+  --bg-overlay: #313244;
+  --border: #45475a;
+  --text: #cdd6f4;
+  --text-muted: rgba(205, 214, 244, 0.5);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* react-day-picker dark theme */
+.rdp-root {
+  --rdp-accent-color: #7c3aed;
+  --rdp-accent-background-color: rgba(124, 58, 237, 0.15);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+.rdp-day_button {
+  color: var(--text);
+}
+.rdp-day_button:hover:not([disabled]) {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.rdp-month_caption {
+  color: var(--text);
+  font-weight: 600;
+}
+.rdp-weekday {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+.rdp-nav button {
+  color: var(--text-muted);
+}
+.rdp-nav button:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+}
+
+/* Dropdown captions (year/month selectors) */
+.rdp-dropdown select {
+  background: var(--bg-overlay);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+/* Appointment dot indicator */
+.rdp-has-appt {
+  position: relative;
+}
+.rdp-has-appt::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #7c3aed;
+  pointer-events: none;
+}
