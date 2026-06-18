@@ -1,16 +1,16 @@
 interface Props {
   today: number
-  missionaries: number
+  patients: number
   week: number
-  missions: number
+  monthConsultations: number
 }
 
-export function StatsRow({ today, missionaries, week, missions }: Props) {
+export function StatsRow({ today, patients, week, monthConsultations }: Props) {
   const stats = [
-    { label: 'Hoy', value: today, color: '#a78bfa' },
-    { label: 'Misioneros', value: missionaries, color: '#34d399' },
+    { label: 'Hoje', value: today, color: '#a78bfa' },
+    { label: 'Pacientes', value: patients, color: '#34d399' },
     { label: 'Esta semana', value: week, color: '#fbbf24' },
-    { label: 'Misiones', value: missions, color: '#22d3ee' },
+    { label: 'Consultas mês', value: monthConsultations, color: '#22d3ee' },
   ]
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

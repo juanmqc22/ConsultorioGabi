@@ -1,13 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 
-export async function getMissionaries(missionId?: string, search?: string) {
+export async function getPatients(search?: string) {
   const supabase = await createClient()
   let query = supabase
-    .from('missionaries')
+    .from('patients')
     .select(`
-      id, preferred_name, full_name, birthdate, country_of_origin,
-      mission_id, allergies, status,
-      mission:missions(id, short_name, color),
+      id, preferred_name, full_name, birthdate, cpf, email, phone,
+      allergies, status,
       last_consultation:consultations(status, consulted_at)
     `)
     .eq('status', 'active')
@@ -15,7 +14,6 @@ export async function getMissionaries(missionId?: string, search?: string) {
     .order('consulted_at', { ascending: false, foreignTable: 'last_consultation' })
     .limit(1, { foreignTable: 'last_consultation' })
 
-  if (missionId) query = query.eq('mission_id', missionId)
   if (search) query = query.ilike('preferred_name', `%${search}%`)
 
   const { data, error } = await query
@@ -23,24 +21,18 @@ export async function getMissionaries(missionId?: string, search?: string) {
   return data ?? []
 }
 
-export async function getMissionaryById(id: string) {
+export async function getPatientById(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('missionaries')
-    .select('*, mission:missions(*)')
+    .from('patients')
+    .select('*')
     .eq('id', id)
     .single()
   if (error) throw error
   return data
 }
 
-export async function getMissions() {
-  const supabase = await createClient()
-  const { data } = await supabase.from('missions').select('*').order('short_name')
-  return data ?? []
-}
-
-export async function getConsultationHistory(missionaryId: string) {
+export async function getConsultationHistory(patientId: string) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('consultations')
@@ -50,17 +42,16 @@ export async function getConsultationHistory(missionaryId: string) {
       vital_temp, vital_spo2, vital_weight,
       files:consultation_files(id, file_name, file_path, file_type, file_size, created_at)
     `)
-    .eq('missionary_id', missionaryId)
+    .eq('patient_id', patientId)
     .order('consulted_at', { ascending: false })
   return data ?? []
 }
 
-export async function getMissionariesByMission(missionId: string) {
+export async function getPatientsForSelect() {
   const supabase = await createClient()
   const { data } = await supabase
-    .from('missionaries')
+    .from('patients')
     .select('id, preferred_name')
-    .eq('mission_id', missionId)
     .eq('status', 'active')
     .order('preferred_name')
   return data ?? []

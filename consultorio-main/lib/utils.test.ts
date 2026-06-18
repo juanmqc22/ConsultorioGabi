@@ -1,31 +1,31 @@
 import { describe, it, expect } from 'vitest'
-import { getMissionaryHealthStatus, formatAge, formatDate, getWeekDays } from './utils'
+import { getPatientHealthStatus, formatAge, formatDate, getWeekDays } from './utils'
 
-describe('getMissionaryHealthStatus', () => {
+describe('getPatientHealthStatus', () => {
   it('returns saudavel when allergies is null and no consultation', () => {
-    expect(getMissionaryHealthStatus({ allergies: null }, null)).toBe('saudavel')
+    expect(getPatientHealthStatus({ allergies: null }, null)).toBe('saudavel')
   })
 
   it('returns saudavel when allergies is empty string', () => {
-    expect(getMissionaryHealthStatus({ allergies: '' }, null)).toBe('saudavel')
+    expect(getPatientHealthStatus({ allergies: '' }, null)).toBe('saudavel')
   })
 
   it('returns alergia when allergies is set, regardless of consultation status', () => {
-    expect(getMissionaryHealthStatus({ allergies: 'Penicilina' }, null)).toBe('alergia')
-    expect(getMissionaryHealthStatus({ allergies: 'Penicilina' }, { status: 'follow_up' })).toBe('alergia')
-    expect(getMissionaryHealthStatus({ allergies: 'Penicilina' }, { status: 'resolved' })).toBe('alergia')
+    expect(getPatientHealthStatus({ allergies: 'Penicilina' }, null)).toBe('alergia')
+    expect(getPatientHealthStatus({ allergies: 'Penicilina' }, { status: 'follow_up' })).toBe('alergia')
+    expect(getPatientHealthStatus({ allergies: 'Penicilina' }, { status: 'resolved' })).toBe('alergia')
   })
 
   it('returns acompanhamento when last consultation is follow_up and no allergies', () => {
-    expect(getMissionaryHealthStatus({ allergies: null }, { status: 'follow_up' })).toBe('acompanhamento')
+    expect(getPatientHealthStatus({ allergies: null }, { status: 'follow_up' })).toBe('acompanhamento')
   })
 
   it('returns saudavel when last consultation is resolved and no allergies', () => {
-    expect(getMissionaryHealthStatus({ allergies: null }, { status: 'resolved' })).toBe('saudavel')
+    expect(getPatientHealthStatus({ allergies: null }, { status: 'resolved' })).toBe('saudavel')
   })
 
   it('returns saudavel when last consultation is referral and no allergies', () => {
-    expect(getMissionaryHealthStatus({ allergies: null }, { status: 'referral' })).toBe('saudavel')
+    expect(getPatientHealthStatus({ allergies: null }, { status: 'referral' })).toBe('saudavel')
   })
 })
 

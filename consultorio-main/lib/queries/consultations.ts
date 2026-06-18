@@ -8,7 +8,7 @@ export async function getConsultationById(id: string): Promise<ConsultationWithD
     .from('consultations')
     .select(`
       *,
-      missionary:missionaries(id, preferred_name, full_name, mission_id, mission:missions(short_name, color)),
+      patient:patients(id, preferred_name, full_name),
       files:consultation_files(id, file_name, file_path, file_type, file_size, created_at)
     `)
     .eq('id', id)
@@ -30,32 +30,17 @@ export async function getConsultationById(id: string): Promise<ConsultationWithD
 }
 
 export async function getConsultationsByFilters({
-  missionId,
   month,
   year,
   status,
-  missionaryId,
+  patientId,
 }: {
-  missionId: string
   month: number
   year: number
   status?: ConsultationStatus | 'all'
-  missionaryId?: string
+  patientId?: string
 }): Promise<ConsultationFilterResult[]> {
   const supabase = await createClient()
-
-  let missionaryQuery = supabase
-    .from('missionaries')
-    .select('id')
-    .eq('mission_id', missionId)
-    .eq('status', 'active')
-
-  if (missionaryId) missionaryQuery = missionaryQuery.eq('id', missionaryId)
-
-  const { data: missionaryData } = await missionaryQuery
-  const missionaryIds = (missionaryData ?? []).map((m: { id: string }) => m.id)
-
-  if (missionaryIds.length === 0) return []
 
   const startDate = `${year}-${String(month).padStart(2, '0')}-01`
   const daysInMonth = new Date(year, month, 0).getDate()
@@ -65,13 +50,13 @@ export async function getConsultationsByFilters({
     .from('consultations')
     .select(`
       id, consulted_at, chief_complaint, diagnosis, status,
-      missionary:missionaries(preferred_name, full_name, mission:missions(short_name))
+      patient:patients(preferred_name, full_name)
     `)
-    .in('missionary_id', missionaryIds)
     .gte('consulted_at', startDate)
     .lte('consulted_at', endDate)
     .order('consulted_at', { ascending: false })
 
+  if (patientId) query = query.eq('patient_id', patientId)
   if (status && status !== 'all') query = query.eq('status', status as ConsultationStatus)
 
   const { data, error } = await query

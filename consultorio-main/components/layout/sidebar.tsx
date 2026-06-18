@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Inicio', icon: '📋' },
-  { href: '/missionaries', label: 'Misioneros', icon: '👤' },
+  { href: '/dashboard', label: 'Início', icon: '📋' },
+  { href: '/pacientes', label: 'Pacientes', icon: '👤' },
   { href: '/agenda', label: 'Agenda', icon: '📅' },
-  { href: '/consultas/nova', label: 'Nueva Consulta', icon: '📝' },
+  { href: '/consultas/nova', label: 'Nova Consulta', icon: '📝' },
   { href: '/relatorios', label: 'Relatórios', icon: '📊' },
 ]
 
@@ -18,7 +18,7 @@ export function Sidebar() {
       style={{ background: 'var(--bg-surface)', borderColor: 'var(--border)' }}
     >
       <div className="font-bold text-violet-400 mb-6 text-base flex items-center gap-2">
-        <span>⚕️</span> Consultorio
+        <span>⚕️</span> Consultório
       </div>
       <nav className="flex flex-col gap-1">
         {NAV_ITEMS.map(item => {

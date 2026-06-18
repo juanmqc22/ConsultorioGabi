@@ -6,7 +6,7 @@ import { uploadConsultationFile, deleteConsultationFile } from '@/lib/actions/fi
 
 interface Props {
   consultationId: string
-  missionaryId: string
+  patientId: string
   initialFiles: ConsultationFile[]
 }
 
@@ -16,7 +16,7 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export function FileAttachments({ consultationId, missionaryId, initialFiles }: Props) {
+export function FileAttachments({ consultationId, patientId, initialFiles }: Props) {
   const [files, setFiles] = useState<ConsultationFile[]>(initialFiles)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,7 +35,7 @@ export function FileAttachments({ consultationId, missionaryId, initialFiles }: 
       const formData = new FormData()
       formData.append('file', file)
       formData.append('consultationId', consultationId)
-      formData.append('missionaryId', missionaryId)
+      formData.append('patientId', patientId)
       try {
         await uploadConsultationFile(formData)
       } catch (err) {

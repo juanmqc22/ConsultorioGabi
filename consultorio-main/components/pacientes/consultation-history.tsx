@@ -3,9 +3,9 @@ import { formatDate } from '@/lib/utils'
 import { ConsultationStatus } from '@/lib/types'
 
 const STATUS_LABELS: Record<ConsultationStatus, string> = {
-  resolved: 'Resuelto',
-  follow_up: 'Seguimiento',
-  referral: 'Derivación',
+  resolved: 'Resolvido',
+  follow_up: 'Acompanhamento',
+  referral: 'Encaminhamento',
 }
 
 interface Consultation {
@@ -19,20 +19,20 @@ interface Consultation {
   follow_up_date: string | null
 }
 
-export function ConsultationHistory({ consultations, missionaryId }: { consultations: Consultation[]; missionaryId: string }) {
+export function ConsultationHistory({ consultations, patientId }: { consultations: Consultation[]; patientId: string }) {
   return (
     <div className="rounded-xl overflow-hidden" style={{ background: 'var(--bg-overlay)' }}>
       <div
         className="px-4 py-3 flex justify-between items-center text-xs uppercase tracking-wide"
         style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}
       >
-        <span>Historial de Consultas</span>
-        <Link href={`/consultas/nova?missionaryId=${missionaryId}`} className="text-violet-400 hover:text-violet-300 normal-case font-normal text-xs">
-          + Nueva
+        <span>Histórico de Consultas</span>
+        <Link href={`/consultas/nova?patientId=${patientId}`} className="text-violet-400 hover:text-violet-300 normal-case font-normal text-xs">
+          + Nova
         </Link>
       </div>
       {consultations.length === 0 ? (
-        <p className="p-4 text-sm" style={{ color: 'var(--text-muted)' }}>Sin consultas registradas.</p>
+        <p className="p-4 text-sm" style={{ color: 'var(--text-muted)' }}>Sem consultas registradas.</p>
       ) : (
         consultations.map((c, i) => (
           <Link

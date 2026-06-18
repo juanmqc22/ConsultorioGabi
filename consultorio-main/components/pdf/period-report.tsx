@@ -2,14 +2,14 @@ import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import { ConsultationStatus, ConsultationFilterResult } from '@/lib/types'
 
 const STATUS_LABELS: Record<ConsultationStatus, string> = {
-  resolved: 'Resuelto',
-  follow_up: 'Seguimiento',
-  referral: 'Derivación',
+  resolved: 'Resolvido',
+  follow_up: 'Acompanhamento',
+  referral: 'Encaminhamento',
 }
 
-const MONTHS_ES = [
-  '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+const MONTHS_PT = [
+  '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
 ]
 
 const styles = StyleSheet.create({
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     padding: '5 8',
     borderBottom: '1px solid #f0f0f0',
   },
-  colMissionary: { width: '25%', fontSize: 9 },
+  colPatient: { width: '25%', fontSize: 9 },
   colDate: { width: '12%', fontSize: 9 },
   colComplaint: { width: '28%', fontSize: 9 },
   colDiagnosis: { width: '25%', fontSize: 9 },
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
 })
 
 export interface PeriodReportData {
-  missionName: string
   month: number
   year: number
   consultations: ConsultationFilterResult[]
@@ -62,7 +61,7 @@ function formatDate(dateStr: string) {
 }
 
 export function PeriodReport({ data }: { data: PeriodReportData }) {
-  const { missionName, month, year, consultations } = data
+  const { month, year, consultations } = data
   const today = new Date().toLocaleDateString('pt-BR')
 
   return (
@@ -70,9 +69,9 @@ export function PeriodReport({ data }: { data: PeriodReportData }) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.title}>
-            Relatório de Consultas — {MONTHS_ES[month]} {year}
+            Relatório de Consultas — {MONTHS_PT[month]} {year}
           </Text>
-          <Text style={styles.subtitle}>{missionName}</Text>
+          <Text style={styles.subtitle}>Consultório Médico</Text>
         </View>
 
         <Text style={styles.summary}>
@@ -81,7 +80,7 @@ export function PeriodReport({ data }: { data: PeriodReportData }) {
 
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={[styles.colMissionary, styles.headerText]}>Misionero</Text>
+            <Text style={[styles.colPatient, styles.headerText]}>Paciente</Text>
             <Text style={[styles.colDate, styles.headerText]}>Data</Text>
             <Text style={[styles.colComplaint, styles.headerText]}>Motivo</Text>
             <Text style={[styles.colDiagnosis, styles.headerText]}>Diagnóstico</Text>
@@ -90,8 +89,8 @@ export function PeriodReport({ data }: { data: PeriodReportData }) {
 
           {consultations.map((c, i) => (
             <View key={c.id} style={[styles.tableRow, i % 2 === 0 ? {} : { backgroundColor: '#fafafa' }]}>
-              <Text style={styles.colMissionary}>
-                {c.missionary?.preferred_name ?? '—'}
+              <Text style={styles.colPatient}>
+                {c.patient?.preferred_name ?? '—'}
               </Text>
               <Text style={styles.colDate}>
                 {formatDate(c.consulted_at)}
@@ -110,7 +109,7 @@ export function PeriodReport({ data }: { data: PeriodReportData }) {
         </View>
 
         <Text style={styles.footer}>
-          Gerado em {today} — Consultório Médico Misional
+          Gerado em {today} — Consultório Médico
         </Text>
       </Page>
     </Document>

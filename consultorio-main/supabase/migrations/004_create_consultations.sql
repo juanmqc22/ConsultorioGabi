@@ -2,7 +2,7 @@ create type consultation_status as enum ('resolved', 'follow_up', 'referral');
 
 create table consultations (
   id uuid primary key default gen_random_uuid(),
-  missionary_id uuid not null references missionaries(id) on delete cascade,
+  patient_id uuid not null references patients(id) on delete cascade,
   appointment_id uuid references appointments(id) on delete set null,
   consulted_at timestamptz not null default now(),
   chief_complaint text,
@@ -20,7 +20,7 @@ create table consultations (
   created_at timestamptz not null default now()
 );
 
-create index consultations_missionary_id_idx on consultations(missionary_id);
+create index consultations_patient_id_idx on consultations(patient_id);
 create index consultations_consulted_at_idx on consultations(consulted_at);
 
 alter table consultations enable row level security;

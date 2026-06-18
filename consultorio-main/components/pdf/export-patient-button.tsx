@@ -1,19 +1,19 @@
 'use client'
 import { useState } from 'react'
 import { pdf } from '@react-pdf/renderer'
-import { MissionaryReport, MissionaryReportData } from './missionary-report'
+import { PatientReport, PatientReportData } from './patient-report'
 
-export function ExportMissionaryPdfButton({ data }: { data: MissionaryReportData }) {
+export function ExportPatientPdfButton({ data }: { data: PatientReportData }) {
   const [loading, setLoading] = useState(false)
 
   async function handleExport() {
     setLoading(true)
     try {
-      const blob = await pdf(<MissionaryReport data={data} />).toBlob()
+      const blob = await pdf(<PatientReport data={data} />).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `relatorio-${data.missionary.preferred_name.toLowerCase().replace(/\s+/g, '-')}.pdf`
+      a.download = `relatorio-${data.patient.preferred_name.toLowerCase().replace(/\s+/g, '-')}.pdf`
       a.click()
       URL.revokeObjectURL(url)
     } finally {

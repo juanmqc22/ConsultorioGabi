@@ -1,4 +1,4 @@
-import { getMissionaryHealthStatus, HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from '@/lib/utils'
+import { getPatientHealthStatus, HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from '@/lib/utils'
 import { ConsultationStatus } from '@/lib/types'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function HealthStatusBadge({ allergies, lastConsultationStatus }: Props) {
-  const status = getMissionaryHealthStatus(
+  const status = getPatientHealthStatus(
     { allergies },
     lastConsultationStatus ? { status: lastConsultationStatus } : null
   )

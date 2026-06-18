@@ -1,15 +1,15 @@
 'use client'
 import { useState } from 'react'
-import { deleteMissionary } from '@/lib/actions/missionaries'
+import { deletePatient } from '@/lib/actions/patients'
 
-export function DeleteMissionaryButton({ id, name }: { id: string; name: string }) {
+export function DeletePatientButton({ id, name }: { id: string; name: string }) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleDelete() {
     setLoading(true)
     try {
-      await deleteMissionary(id)
+      await deletePatient(id)
     } catch {
       setLoading(false)
       setOpen(false)
@@ -27,7 +27,7 @@ export function DeleteMissionaryButton({ id, name }: { id: string; name: string 
           border: '1px solid rgba(239,68,68,0.3)',
         }}
       >
-        Eliminar
+        Excluir
       </button>
 
       {open && (
@@ -40,11 +40,11 @@ export function DeleteMissionaryButton({ id, name }: { id: string; name: string 
             style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
           >
             <div className="text-center text-3xl">⚠️</div>
-            <h2 className="text-center font-bold text-base">¿Eliminar misionero?</h2>
+            <h2 className="text-center font-bold text-base">Excluir paciente?</h2>
             <p className="text-sm text-center leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              Se eliminarán permanentemente{' '}
+              Serão excluídos permanentemente{' '}
               <strong style={{ color: 'var(--text)' }}>{name}</strong>{' '}
-              y todas sus consultas y citas. Esta acción no se puede deshacer.
+              e todas as suas consultas e agendamentos. Esta ação não pode ser desfeita.
             </p>
             <div className="flex gap-3">
               <button
@@ -60,7 +60,7 @@ export function DeleteMissionaryButton({ id, name }: { id: string; name: string 
                 className="flex-1 rounded-lg py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
                 style={{ background: '#ef4444', color: 'white' }}
               >
-                {loading ? 'Eliminando...' : 'Sí, eliminar'}
+                {loading ? 'Excluindo...' : 'Sim, excluir'}
               </button>
             </div>
           </div>

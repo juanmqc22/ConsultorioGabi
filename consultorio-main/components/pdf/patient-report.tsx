@@ -1,10 +1,10 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
-import { ConsultationStatus, Missionary, Mission, Consultation, ConsultationFile } from '@/lib/types'
+import { ConsultationStatus, Patient, Consultation, ConsultationFile } from '@/lib/types'
 
 const STATUS_LABELS: Record<ConsultationStatus, string> = {
-  resolved: 'Resuelto',
-  follow_up: 'Seguimiento',
-  referral: 'Derivación',
+  resolved: 'Resolvido',
+  follow_up: 'Acompanhamento',
+  referral: 'Encaminhamento',
 }
 
 const styles = StyleSheet.create({
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
   noConsultations: { fontSize: 10, color: '#999', fontStyle: 'italic' },
 })
 
-export interface MissionaryReportData {
-  missionary: Missionary & { mission?: Mission | null }
+export interface PatientReportData {
+  patient: Patient
   consultations: (Consultation & { files?: ConsultationFile[] })[]
 }
 
@@ -74,17 +74,17 @@ function formatDate(dateStr: string) {
   return `${d}/${m}/${y}`
 }
 
-export function MissionaryReport({ data }: { data: MissionaryReportData }) {
-  const { missionary, consultations } = data
+export function PatientReport({ data }: { data: PatientReportData }) {
+  const { patient, consultations } = data
   const today = new Date().toLocaleDateString('pt-BR')
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.name}>{missionary.full_name}</Text>
+          <Text style={styles.name}>{patient.full_name}</Text>
           <Text style={styles.subtitle}>
-            {missionary.mission?.name ?? ''} · {missionary.current_area ?? ''}
+            {patient.phone ?? ''}{patient.email ? ` · ${patient.email}` : ''}
           </Text>
         </View>
 
@@ -92,44 +92,46 @@ export function MissionaryReport({ data }: { data: MissionaryReportData }) {
         <View style={styles.infoGrid}>
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Nome preferido</Text>
-            <Text style={styles.infoValue}>{missionary.preferred_name}</Text>
+            <Text style={styles.infoValue}>{patient.preferred_name}</Text>
           </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>País de origem</Text>
-            <Text style={styles.infoValue}>{missionary.country_of_origin}</Text>
-          </View>
-          {missionary.phone && (
+          {patient.cpf && (
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Telefone</Text>
-              <Text style={styles.infoValue}>{missionary.phone}</Text>
+              <Text style={styles.infoLabel}>CPF</Text>
+              <Text style={styles.infoValue}>{patient.cpf}</Text>
             </View>
           )}
-          {missionary.companion_name && (
+          {patient.phone && (
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Companheiro(a)</Text>
-              <Text style={styles.infoValue}>{missionary.companion_name}</Text>
+              <Text style={styles.infoLabel}>Telefone</Text>
+              <Text style={styles.infoValue}>{patient.phone}</Text>
+            </View>
+          )}
+          {patient.email && (
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>E-mail</Text>
+              <Text style={styles.infoValue}>{patient.email}</Text>
             </View>
           )}
         </View>
 
         <Text style={styles.sectionTitle}>Informações Médicas</Text>
         <View style={styles.infoGrid}>
-          {missionary.blood_type && (
+          {patient.blood_type && (
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>Tipo sanguíneo</Text>
-              <Text style={styles.infoValue}>{missionary.blood_type}</Text>
+              <Text style={styles.infoValue}>{patient.blood_type}</Text>
             </View>
           )}
-          {missionary.allergies && (
+          {patient.allergies && (
             <View style={{ width: '100%' }}>
               <Text style={styles.infoLabel}>Alergias</Text>
-              <Text style={styles.infoValue}>{missionary.allergies}</Text>
+              <Text style={styles.infoValue}>{patient.allergies}</Text>
             </View>
           )}
-          {missionary.chronic_conditions && (
+          {patient.chronic_conditions && (
             <View style={{ width: '100%' }}>
               <Text style={styles.infoLabel}>Condições crônicas</Text>
-              <Text style={styles.infoValue}>{missionary.chronic_conditions}</Text>
+              <Text style={styles.infoValue}>{patient.chronic_conditions}</Text>
             </View>
           )}
         </View>
@@ -182,7 +184,7 @@ export function MissionaryReport({ data }: { data: MissionaryReportData }) {
               )}
               {c.follow_up_date && (
                 <View style={styles.field}>
-                  <Text style={styles.fieldLabel}>Seguimento</Text>
+                  <Text style={styles.fieldLabel}>Retorno</Text>
                   <Text style={styles.fieldValue}>{formatDate(c.follow_up_date)}</Text>
                 </View>
               )}
@@ -196,7 +198,7 @@ export function MissionaryReport({ data }: { data: MissionaryReportData }) {
         )}
 
         <Text style={styles.footer}>
-          Gerado em {today} — Consultório Médico Misional
+          Gerado em {today} — Consultório Médico
         </Text>
       </Page>
     </Document>
