@@ -1,1 +1,3 @@
 .claude/
+consultorio-main/.env.local
+consultorio-main/.env*.local
