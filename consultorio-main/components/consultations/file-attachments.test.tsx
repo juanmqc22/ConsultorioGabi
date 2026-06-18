@@ -13,7 +13,7 @@ vi.mock('@/lib/actions/files', () => ({
 
 const baseProps = {
   consultationId: 'c-123',
-  missionaryId: 'm-456',
+  patientId: 'm-456',
 }
 
 describe('FileAttachments', () => {
