@@ -2,7 +2,7 @@ create type appointment_status as enum ('scheduled', 'confirmed', 'completed', '
 
 create table appointments (
   id uuid primary key default gen_random_uuid(),
-  missionary_id uuid not null references missionaries(id) on delete cascade,
+  patient_id uuid not null references patients(id) on delete cascade,
   scheduled_at timestamptz not null,
   reason text,
   status appointment_status not null default 'scheduled',
@@ -10,7 +10,7 @@ create table appointments (
   created_at timestamptz not null default now()
 );
 
-create index appointments_missionary_id_idx on appointments(missionary_id);
+create index appointments_patient_id_idx on appointments(patient_id);
 create index appointments_scheduled_at_idx on appointments(scheduled_at);
 
 alter table appointments enable row level security;
