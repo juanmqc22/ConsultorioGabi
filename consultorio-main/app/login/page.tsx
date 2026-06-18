@@ -17,7 +17,7 @@ export default function LoginPage() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setError('Email o contraseña incorrectos.')
+      setError('Email ou senha incorretos.')
       setLoading(false)
       return
     }
@@ -31,7 +31,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">⚕️</div>
           <h1 className="text-2xl font-bold">Consultório</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Acceso exclusivo del médico</p>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Acesso exclusivo da médica</p>
         </div>
         <form
           onSubmit={handleLogin}
@@ -53,7 +53,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>
-              Contraseña
+              Senha
             </label>
             <input
               type="password"
@@ -70,7 +70,7 @@ export default function LoginPage() {
             disabled={loading}
             className="bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-lg py-2.5 text-sm font-semibold transition-colors mt-1"
           >
-            {loading ? 'Ingresando...' : 'Ingresar'}
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </div>
