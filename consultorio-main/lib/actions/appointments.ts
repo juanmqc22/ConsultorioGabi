@@ -5,13 +5,13 @@ import { revalidatePath } from 'next/cache'
 export async function createAppointment(formData: FormData) {
   const supabase = await createClient()
 
-  const missionary_id = formData.get('missionary_id') as string
+  const patient_id = formData.get('patient_id') as string
   const scheduled_at = formData.get('scheduled_at') as string
-  if (!missionary_id?.trim()) throw new Error('Missionário não selecionado.')
+  if (!patient_id?.trim()) throw new Error('Paciente não selecionado.')
   if (!scheduled_at) throw new Error('Data e hora são obrigatórias.')
 
   const { error } = await supabase.from('appointments').insert({
-    missionary_id: formData.get('missionary_id') as string,
+    patient_id: formData.get('patient_id') as string,
     scheduled_at: formData.get('scheduled_at') as string,
     reason: formData.get('reason') as string || null,
     status: 'scheduled',

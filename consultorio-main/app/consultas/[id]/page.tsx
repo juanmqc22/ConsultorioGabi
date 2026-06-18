@@ -7,9 +7,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 const STATUS_LABELS: Record<ConsultationStatus, string> = {
-  resolved: 'Resuelto',
-  follow_up: 'Seguimiento',
-  referral: 'Derivación',
+  resolved: 'Resolvido',
+  follow_up: 'Acompanhamento',
+  referral: 'Encaminhamento',
 }
 
 const STATUS_COLORS: Record<ConsultationStatus, string> = {
@@ -27,28 +27,25 @@ export default async function ConsultationDetailPage({
   const consultation = await getConsultationById(id).catch(() => null)
   if (!consultation) notFound()
 
-  const missionary = consultation.missionary
-  const missionaryId = missionary?.id ?? ''
+  const patient = consultation.patient
+  const patientId = patient?.id ?? ''
 
   return (
     <AppShell>
       <div className="p-4 md:p-6 max-w-3xl">
-        {/* Breadcrumb */}
         <div className="mb-4 flex items-center gap-2 text-sm" style={{ color: 'var(--text-muted)' }}>
-          <Link href="/missionaries" className="hover:text-white transition-colors">Misioneros</Link>
+          <Link href="/pacientes" className="hover:text-white transition-colors">Pacientes</Link>
           <span>›</span>
-          <Link href={`/missionaries/${missionaryId}`} className="hover:text-white transition-colors">
-            {missionary?.preferred_name}
+          <Link href={`/pacientes/${patientId}`} className="hover:text-white transition-colors">
+            {patient?.preferred_name}
           </Link>
           <span>›</span>
           <span style={{ color: 'var(--text)' }}>
             Consulta {formatDate(consultation.consulted_at.split('T')[0])}
           </span>
-          {/* botão editar fora do escopo deste plano */}
         </div>
 
         <div className="flex flex-col gap-4">
-          {/* Cabeçalho */}
           <div
             className="rounded-xl p-4"
             style={{ background: 'var(--bg-overlay)' }}
@@ -61,8 +58,7 @@ export default async function ConsultationDetailPage({
                 <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
                   {formatDate(consultation.consulted_at.split('T')[0])}
                   {' · '}
-                  {missionary?.preferred_name}
-                  {missionary?.mission && ` · ${missionary.mission.short_name}`}
+                  {patient?.preferred_name}
                 </p>
               </div>
               <span
@@ -73,7 +69,6 @@ export default async function ConsultationDetailPage({
             </div>
           </div>
 
-          {/* Sinais Vitais */}
           {(consultation.vital_bp || consultation.vital_hr || consultation.vital_temp || consultation.vital_spo2 || consultation.vital_weight) && (
             <div className="rounded-xl p-4" style={{ background: 'var(--bg-overlay)' }}>
               <h2 className="text-xs uppercase tracking-wide mb-3" style={{ color: 'var(--text-muted)' }}>
@@ -89,13 +84,12 @@ export default async function ConsultationDetailPage({
             </div>
           )}
 
-          {/* Clínica */}
           <div className="rounded-xl p-4 flex flex-col gap-4" style={{ background: 'var(--bg-overlay)' }}>
             <h2 className="text-xs uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
               Consulta
             </h2>
             {consultation.chief_complaint && (
-              <ClinicalField label="Motivo de consulta" value={consultation.chief_complaint} />
+              <ClinicalField label="Motivo da consulta" value={consultation.chief_complaint} />
             )}
             {consultation.clinical_notes && (
               <ClinicalField label="Notas clínicas" value={consultation.clinical_notes} />
@@ -111,17 +105,16 @@ export default async function ConsultationDetailPage({
             )}
             {consultation.follow_up_date && (
               <ClinicalField
-                label="Data de seguimento"
+                label="Data de retorno"
                 value={formatDate(consultation.follow_up_date)}
               />
             )}
           </div>
 
-          {/* Anexos */}
           <div className="rounded-xl p-4" style={{ background: 'var(--bg-overlay)' }}>
             <FileAttachments
               consultationId={id}
-              missionaryId={missionaryId}
+              patientId={patientId}
               initialFiles={consultation.files}
             />
           </div>

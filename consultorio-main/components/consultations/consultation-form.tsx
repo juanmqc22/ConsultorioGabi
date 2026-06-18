@@ -1,28 +1,28 @@
 'use client'
 import { AllergyAlert } from './allergy-alert'
 import { VitalSignsFields } from './vital-signs-fields'
-import { Mission, Missionary } from '@/lib/types'
+import { Patient } from '@/lib/types'
 import { useState } from 'react'
 import { DateTimePicker } from '@/components/ui/datetime-picker'
 import { DatePicker } from '@/components/ui/date-picker'
 
 interface Props {
-  missionaries: (Pick<Missionary, 'id' | 'preferred_name' | 'allergies'> & { mission: Pick<Mission, 'short_name'> | null })[]
-  preselectedMissionaryId?: string
+  patients: Pick<Patient, 'id' | 'preferred_name' | 'allergies'>[]
+  preselectedPatientId?: string
   action: (formData: FormData) => Promise<void>
 }
 
-export function ConsultationForm({ missionaries, preselectedMissionaryId, action }: Props) {
-  const [selectedId, setSelectedId] = useState(preselectedMissionaryId ?? '')
-  const selected = missionaries.find(m => m.id === selectedId)
+export function ConsultationForm({ patients, preselectedPatientId, action }: Props) {
+  const [selectedId, setSelectedId] = useState(preselectedPatientId ?? '')
+  const selected = patients.find(p => p.id === selectedId)
 
   return (
     <form action={action} className="flex flex-col gap-5">
-      <input type="hidden" name="missionary_id" value={selectedId} />
+      <input type="hidden" name="patient_id" value={selectedId} />
 
       <div className="rounded-xl p-4 flex flex-col gap-4" style={{ background: 'var(--bg-overlay)' }}>
         <div>
-          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>Misionero *</label>
+          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>Paciente *</label>
           <select
             required
             value={selectedId}
@@ -30,10 +30,10 @@ export function ConsultationForm({ missionaries, preselectedMissionaryId, action
             className="w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-500"
             style={{ background: 'var(--bg-base)', color: 'var(--text)', border: '1px solid var(--border)' }}
           >
-            <option value="">Seleccionar misionero...</option>
-            {missionaries.map(m => (
-              <option key={m.id} value={m.id}>
-                {m.preferred_name} · {m.mission?.short_name}
+            <option value="">Selecionar paciente...</option>
+            {patients.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.preferred_name}
               </option>
             ))}
           </select>
@@ -41,7 +41,7 @@ export function ConsultationForm({ missionaries, preselectedMissionaryId, action
 
         {selected?.allergies && <AllergyAlert allergies={selected.allergies} />}
 
-        <DateTimePicker name="consulted_at" label="Fecha y hora" required />
+        <DateTimePicker name="consulted_at" label="Data e hora" required />
       </div>
 
       <div className="rounded-xl p-4" style={{ background: 'var(--bg-overlay)' }}>
@@ -49,38 +49,38 @@ export function ConsultationForm({ missionaries, preselectedMissionaryId, action
       </div>
 
       <div className="rounded-xl p-4 flex flex-col gap-4" style={{ background: 'var(--bg-overlay)' }}>
-        <TextArea label="Motivo de consulta" name="chief_complaint" placeholder="Describa el motivo de consulta..." />
-        <TextArea label="Notas clínicas" name="clinical_notes" placeholder="Examen físico, observaciones..." />
+        <TextArea label="Motivo da consulta" name="chief_complaint" placeholder="Descreva o motivo da consulta..." />
+        <TextArea label="Notas clínicas" name="clinical_notes" placeholder="Exame físico, observações..." />
       </div>
 
       <div className="rounded-xl p-4 flex flex-col gap-4" style={{ background: 'var(--bg-overlay)' }}>
         <TextArea label="Diagnóstico" name="diagnosis" placeholder="Ex: Lombalgia aguda" />
         <div>
-          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>CIE-10 (opcional)</label>
+          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>CID-10 (opcional)</label>
           <input
             name="cid10"
             type="text"
-            placeholder="Ej: M54.5"
+            placeholder="Ex: M54.5"
             className="w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-500"
             style={{ background: 'var(--bg-base)', color: 'var(--text)', border: '1px solid var(--border)' }}
           />
         </div>
-        <TextArea label="Tratamiento / Medicación" name="treatment" placeholder="Ej: Ibuprofeno 400mg 8/8h por 5 días..." />
+        <TextArea label="Tratamento / Medicação" name="treatment" placeholder="Ex: Ibuprofeno 400mg 8/8h por 5 dias..." />
       </div>
 
       <div className="rounded-xl p-4 grid grid-cols-2 gap-4" style={{ background: 'var(--bg-overlay)' }}>
-        <DatePicker name="follow_up_date" label="Fecha de seguimiento" />
+        <DatePicker name="follow_up_date" label="Data de retorno" />
         <div>
-          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>Estado</label>
+          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>Status</label>
           <select
             name="status"
             defaultValue="resolved"
             className="w-full rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-violet-500"
             style={{ background: 'var(--bg-base)', color: 'var(--text)', border: '1px solid var(--border)' }}
           >
-            <option value="resolved">Resuelto</option>
-            <option value="follow_up">Seguimiento</option>
-            <option value="referral">Derivación</option>
+            <option value="resolved">Resolvido</option>
+            <option value="follow_up">Acompanhamento</option>
+            <option value="referral">Encaminhamento</option>
           </select>
         </div>
       </div>
@@ -116,7 +116,7 @@ export function ConsultationForm({ missionaries, preselectedMissionaryId, action
         disabled={!selectedId}
         className="bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white font-semibold py-3 rounded-xl transition-colors"
       >
-        Guardar Consulta
+        Salvar Consulta
       </button>
     </form>
   )

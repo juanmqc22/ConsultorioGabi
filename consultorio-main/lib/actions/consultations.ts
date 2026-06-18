@@ -5,14 +5,14 @@ import { redirect } from 'next/navigation'
 
 export async function createConsultation(formData: FormData) {
   const supabase = await createClient()
-  const missionaryId = formData.get('missionary_id') as string
+  const patientId = formData.get('patient_id') as string
 
-  if (!missionaryId?.trim()) throw new Error('Missionário não selecionado.')
+  if (!patientId?.trim()) throw new Error('Paciente não selecionado.')
   const consulted_at = formData.get('consulted_at') as string
   if (!consulted_at) throw new Error('Data da consulta é obrigatória.')
 
   const { data, error } = await supabase.from('consultations').insert({
-    missionary_id: missionaryId,
+    patient_id: patientId,
     appointment_id: formData.get('appointment_id') as string || null,
     consulted_at,
     chief_complaint: formData.get('chief_complaint') as string || null,
@@ -33,17 +33,16 @@ export async function createConsultation(formData: FormData) {
 
   const consultationId = data.id
 
-  // Upload arquivos anexados
   const files = formData.getAll('files') as File[]
   const validFiles = files.filter(f => f.size > 0)
 
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
   for (const file of validFiles) {
-    if (file.size > 10 * 1024 * 1024) continue  // skip oversized files silently
-    if (!allowedTypes.includes(file.type)) continue  // skip disallowed types silently
+    if (file.size > 10 * 1024 * 1024) continue
+    if (!allowedTypes.includes(file.type)) continue
 
     const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
-    const path = `${missionaryId}/${consultationId}/${safeName}`
+    const path = `${patientId}/${consultationId}/${safeName}`
 
     const { error: storageError } = await supabase.storage
       .from('consultation-files')
@@ -60,6 +59,6 @@ export async function createConsultation(formData: FormData) {
     }
   }
 
-  revalidatePath(`/missionaries/${missionaryId}`)
+  revalidatePath(`/pacientes/${patientId}`)
   redirect(`/consultas/${consultationId}`)
 }

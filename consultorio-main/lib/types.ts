@@ -1,27 +1,15 @@
-export type MissionaryStatus = 'active' | 'transferred' | 'released' | 'medical_leave'
+export type PatientStatus = 'active' | 'inactive'
 export type AppointmentStatus = 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show'
 export type ConsultationStatus = 'resolved' | 'follow_up' | 'referral'
 export type HealthStatus = 'saudavel' | 'acompanhamento' | 'alergia'
 
-export interface Mission {
-  id: string
-  name: string
-  short_name: string
-  color: string
-  created_at: string
-}
-
-export interface Missionary {
+export interface Patient {
   id: string
   full_name: string
   preferred_name: string
   birthdate: string
-  country_of_origin: string
-  mission_id: string
-  current_area: string | null
-  companion_name: string | null
-  mission_start_date: string | null
-  mission_expected_end: string | null
+  cpf: string | null
+  email: string | null
   phone: string | null
   emergency_contact_name: string | null
   emergency_contact_phone: string | null
@@ -29,25 +17,24 @@ export interface Missionary {
   allergies: string | null
   chronic_conditions: string | null
   notes: string | null
-  status: MissionaryStatus
+  status: PatientStatus
   created_at: string
-  mission?: Mission
 }
 
 export interface Appointment {
   id: string
-  missionary_id: string
+  patient_id: string
   scheduled_at: string
   reason: string | null
   status: AppointmentStatus
   notes: string | null
   created_at: string
-  missionary?: Pick<Missionary, 'id' | 'preferred_name' | 'mission_id'> & { mission?: Pick<Mission, 'short_name' | 'color'> }
+  patient?: Pick<Patient, 'id' | 'preferred_name'>
 }
 
 export interface Consultation {
   id: string
-  missionary_id: string
+  patient_id: string
   appointment_id: string | null
   consulted_at: string
   chief_complaint: string | null
@@ -73,13 +60,11 @@ export interface ConsultationFile {
   file_type: string
   file_size: number
   created_at: string
-  url?: string | null  // URL assinada gerada pelo servidor, não armazenada no banco
+  url?: string | null
 }
 
 export interface ConsultationWithDetails extends Consultation {
-  missionary: Pick<Missionary, 'id' | 'preferred_name' | 'full_name' | 'mission_id'> & {
-    mission: Pick<Mission, 'short_name' | 'color'> | null
-  }
+  patient: Pick<Patient, 'id' | 'preferred_name' | 'full_name'>
   files: ConsultationFile[]
 }
 
@@ -89,9 +74,8 @@ export interface ConsultationFilterResult {
   chief_complaint: string | null
   diagnosis: string | null
   status: ConsultationStatus
-  missionary: {
+  patient: {
     preferred_name: string
     full_name: string
-    mission: Pick<Mission, 'short_name'> | null
   } | null
 }

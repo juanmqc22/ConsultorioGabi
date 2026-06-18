@@ -5,11 +5,15 @@ export async function getDashboardData() {
   const supabase = await createClient()
   const today = new Date()
 
+  const now = new Date()
+  const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString()
+
   const [
     { count: todayCount },
-    { count: missionaryCount },
+    { count: patientCount },
     { count: weekCount },
-    { count: missionCount },
+    { count: monthConsultationsCount },
     { data: todayAppointments },
   ] = await Promise.all([
     supabase
@@ -18,7 +22,7 @@ export async function getDashboardData() {
       .gte('scheduled_at', startOfDay(today))
       .lte('scheduled_at', endOfDay(today)),
     supabase
-      .from('missionaries')
+      .from('patients')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'active'),
     supabase
@@ -27,11 +31,13 @@ export async function getDashboardData() {
       .gte('scheduled_at', startOfWeek(today))
       .lte('scheduled_at', endOfWeek(today)),
     supabase
-      .from('missions')
-      .select('*', { count: 'exact', head: true }),
+      .from('consultations')
+      .select('*', { count: 'exact', head: true })
+      .gte('consulted_at', monthStart)
+      .lte('consulted_at', monthEnd),
     supabase
       .from('appointments')
-      .select('id, scheduled_at, reason, status, missionary:missionaries(id, preferred_name, mission:missions(short_name, color))')
+      .select('id, scheduled_at, reason, status, patient:patients(id, preferred_name)')
       .gte('scheduled_at', startOfDay(today))
       .lte('scheduled_at', endOfDay(today))
       .order('scheduled_at'),
@@ -40,9 +46,9 @@ export async function getDashboardData() {
   return {
     stats: {
       today: todayCount ?? 0,
-      missionaries: missionaryCount ?? 0,
+      patients: patientCount ?? 0,
       week: weekCount ?? 0,
-      missions: missionCount ?? 0,
+      monthConsultations: monthConsultationsCount ?? 0,
     },
     todayAppointments: todayAppointments ?? [],
   }

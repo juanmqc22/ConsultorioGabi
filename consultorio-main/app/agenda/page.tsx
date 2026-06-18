@@ -6,11 +6,11 @@ import { getAppointmentsForDay, getAppointmentDatesInMonth } from '@/lib/queries
 import { createClient } from '@/lib/supabase/server'
 import { toDateStr } from '@/lib/utils'
 
-async function getMissionariesForForm() {
+async function getPatientsForForm() {
   const supabase = await createClient()
   const { data } = await supabase
-    .from('missionaries')
-    .select('id, preferred_name, mission:missions(short_name)')
+    .from('patients')
+    .select('id, preferred_name')
     .eq('status', 'active')
     .order('preferred_name')
   return data ?? []
@@ -24,13 +24,13 @@ export default async function AgendaPage({
   const { date } = await searchParams
   const selectedDate = date ? new Date(date + 'T12:00:00') : new Date()
 
-  const [appointments, missionaries, datesWithAppointments] = await Promise.all([
+  const [appointments, patients, datesWithAppointments] = await Promise.all([
     getAppointmentsForDay(selectedDate),
-    getMissionariesForForm(),
+    getPatientsForForm(),
     getAppointmentDatesInMonth(selectedDate.getFullYear(), selectedDate.getMonth()),
   ])
 
-  const dateLabel = selectedDate.toLocaleDateString('es-BO', {
+  const dateLabel = selectedDate.toLocaleDateString('pt-BR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })
 
@@ -39,7 +39,7 @@ export default async function AgendaPage({
       <div className="p-4 md:p-6 max-w-3xl">
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-bold">Agenda</h1>
-          <AppointmentForm missionaries={missionaries as any} />
+          <AppointmentForm patients={patients as any} />
         </div>
 
         <div className="mb-5">

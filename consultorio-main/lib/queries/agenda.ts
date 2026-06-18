@@ -5,7 +5,7 @@ export async function getAppointmentsForDay(date: Date) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('appointments')
-    .select('id, scheduled_at, reason, status, notes, missionary:missionaries(id, preferred_name, mission:missions(short_name, color))')
+    .select('id, scheduled_at, reason, status, notes, patient:patients(id, preferred_name)')
     .gte('scheduled_at', startOfDay(date))
     .lte('scheduled_at', endOfDay(date))
     .order('scheduled_at')

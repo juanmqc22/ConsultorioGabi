@@ -1,10 +1,10 @@
 import { ConsultationStatus, HealthStatus, AppointmentStatus } from './types'
 
-export function getMissionaryHealthStatus(
-  missionary: { allergies: string | null },
+export function getPatientHealthStatus(
+  patient: { allergies: string | null },
   lastConsultation: { status: ConsultationStatus } | null
 ): HealthStatus {
-  if (missionary.allergies && missionary.allergies.trim().length > 0) return 'alergia'
+  if (patient.allergies && patient.allergies.trim().length > 0) return 'alergia'
   if (lastConsultation?.status === 'follow_up') return 'acompanhamento'
   return 'saudavel'
 }

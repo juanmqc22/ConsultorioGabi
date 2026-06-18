@@ -1,33 +1,30 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
-import { Mission } from '@/lib/types'
 
 interface Props {
-  missions: Mission[]
-  missionaries: { id: string; preferred_name: string }[]
-  currentMissionId: string
+  patients: { id: string; preferred_name: string }[]
 }
 
 const MONTHS = [
-  { value: '1', label: 'Enero' },
-  { value: '2', label: 'Febrero' },
-  { value: '3', label: 'Marzo' },
+  { value: '1', label: 'Janeiro' },
+  { value: '2', label: 'Fevereiro' },
+  { value: '3', label: 'Março' },
   { value: '4', label: 'Abril' },
-  { value: '5', label: 'Mayo' },
-  { value: '6', label: 'Junio' },
-  { value: '7', label: 'Julio' },
+  { value: '5', label: 'Maio' },
+  { value: '6', label: 'Junho' },
+  { value: '7', label: 'Julho' },
   { value: '8', label: 'Agosto' },
-  { value: '9', label: 'Septiembre' },
-  { value: '10', label: 'Octubre' },
-  { value: '11', label: 'Noviembre' },
-  { value: '12', label: 'Diciembre' },
+  { value: '9', label: 'Setembro' },
+  { value: '10', label: 'Outubro' },
+  { value: '11', label: 'Novembro' },
+  { value: '12', label: 'Dezembro' },
 ]
 
 const currentYear = new Date().getFullYear()
 const YEARS = Array.from({ length: 4 }, (_, i) => currentYear - i)
 
-export function ReportFilterForm({ missions, missionaries, currentMissionId }: Props) {
+export function ReportFilterForm({ patients }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -39,8 +36,6 @@ export function ReportFilterForm({ missions, missionaries, currentMissionId }: P
       } else {
         params.delete(key)
       }
-      // Reset missionary when mission changes
-      if (key === 'missionId') params.delete('missionaryId')
       router.push(`/relatorios?${params.toString()}`)
     },
     [router, searchParams]
@@ -61,26 +56,9 @@ export function ReportFilterForm({ missions, missionaries, currentMissionId }: P
       </h2>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="col-span-2">
-          <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>
-            Missão *
-          </label>
-          <select
-            value={searchParams.get('missionId') ?? ''}
-            onChange={e => updateParam('missionId', e.target.value)}
-            className={selectClass}
-            style={selectStyle}
-          >
-            <option value="">Selecionar missão...</option>
-            {missions.map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
-          </select>
-        </div>
-
         <div>
           <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>
-            Mês *
+            Mês
           </label>
           <select
             value={searchParams.get('month') ?? String(new Date().getMonth() + 1)}
@@ -96,7 +74,7 @@ export function ReportFilterForm({ missions, missionaries, currentMissionId }: P
 
         <div>
           <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>
-            Ano *
+            Ano
           </label>
           <select
             value={searchParams.get('year') ?? String(currentYear)}
@@ -121,26 +99,25 @@ export function ReportFilterForm({ missions, missionaries, currentMissionId }: P
             style={selectStyle}
           >
             <option value="all">Todos</option>
-            <option value="resolved">Resuelto</option>
-            <option value="follow_up">Seguimiento</option>
-            <option value="referral">Derivación</option>
+            <option value="resolved">Resolvido</option>
+            <option value="follow_up">Acompanhamento</option>
+            <option value="referral">Encaminhamento</option>
           </select>
         </div>
 
         <div>
           <label className="text-xs uppercase tracking-wide mb-1 block" style={{ color: 'var(--text-muted)' }}>
-            Misionero
+            Paciente
           </label>
           <select
-            value={searchParams.get('missionaryId') ?? ''}
-            onChange={e => updateParam('missionaryId', e.target.value)}
-            disabled={!currentMissionId}
+            value={searchParams.get('patientId') ?? ''}
+            onChange={e => updateParam('patientId', e.target.value)}
             className={selectClass}
-            style={{ ...selectStyle, opacity: !currentMissionId ? 0.5 : 1 }}
+            style={selectStyle}
           >
             <option value="">Todos</option>
-            {missionaries.map(m => (
-              <option key={m.id} value={m.id}>{m.preferred_name}</option>
+            {patients.map(p => (
+              <option key={p.id} value={p.id}>{p.preferred_name}</option>
             ))}
           </select>
         </div>

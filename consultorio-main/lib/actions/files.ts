@@ -6,7 +6,7 @@ export async function uploadConsultationFile(formData: FormData) {
   const supabase = await createClient()
   const file = formData.get('file') as File
   const consultationId = formData.get('consultationId') as string
-  const missionaryId = formData.get('missionaryId') as string
+  const patientId = formData.get('patientId') as string
 
   if (!file || file.size === 0) throw new Error('Arquivo inválido.')
   if (file.size > 10 * 1024 * 1024) throw new Error('Arquivo deve ter no máximo 10MB.')
@@ -15,7 +15,7 @@ export async function uploadConsultationFile(formData: FormData) {
   if (!allowedTypes.includes(file.type)) throw new Error('Tipo de arquivo não suportado.')
 
   const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
-  const path = `${missionaryId}/${consultationId}/${safeName}`
+  const path = `${patientId}/${consultationId}/${safeName}`
 
   const { error: storageError } = await supabase.storage
     .from('consultation-files')
@@ -46,7 +46,6 @@ export async function deleteConsultationFile(
 ) {
   const supabase = await createClient()
 
-  // Delete DB record first — if this fails, storage file is still intact
   const { error: dbError } = await supabase
     .from('consultation_files')
     .delete()
@@ -54,7 +53,6 @@ export async function deleteConsultationFile(
 
   if (dbError) throw new Error(dbError.message)
 
-  // Then delete from storage — an orphaned storage object is cheaper than a broken DB record
   const { error: storageError } = await supabase.storage
     .from('consultation-files')
     .remove([filePath])
